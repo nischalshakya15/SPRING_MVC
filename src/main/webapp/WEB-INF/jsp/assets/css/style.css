@@ -1,0 +1,153 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font: 13px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    margin: 0 auto;
+}
+
+.container {
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: 20px;
+}
+
+.table-container {
+    width: 50%;
+}
+
+.form-container {
+    width: 30%
+}
+
+label {
+    padding: 12px 12px 12px 0;
+    display: inline-block;
+}
+
+input[type=text] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+    outline: none;
+}
+
+input[type=submit] {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    float: right;
+}
+
+input[type=submit]:hover {
+    background-color: #45a049;
+}
+
+input[type=text]:focus, input[type=password]:focus {
+    box-shadow: 0 0 8px #88D5E9;
+    border: 1px solid #88D5E9;
+}
+
+form {
+    background-color: #f2f2f2;
+    border-radius: 3px;
+    padding: 20px;
+    width: 100%;
+    outline: none;
+}
+
+.col-25 {
+    width: 25%;
+    float: left;
+    margin-top: 6px;
+}
+
+.col-75 {
+    width: 75%;
+    float: right;
+    margin-top: 6px;
+}
+
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.btn {
+    color: #fff;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    border-radius: 4px;
+}
+
+.btn-primary {
+    background-color: #4CAF50;
+    padding: 10px 32px;
+    margin: 4px 2px;
+    float: right;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    padding: 10px 32px;
+    margin: 4px 2px;
+    float: left;
+}
+
+.btn-edit {
+    background-color: #6c757d;
+    padding: 10px 32px;
+    margin: 4px 2px;
+    float: left;
+}
+
+table {
+    margin-top: 20px;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    text-align: left;
+    padding: 10px;
+}
+
+th {
+    background-color: #007bff;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+@media screen and (max-width: 600px) {
+
+    .container {
+        width: 100%;
+        margin-top: 0;
+    }
+
+    .col-25, .col-75, input[type=submit] {
+        width: 100%;
+        margin-top: 0;
+    }
+
+    input[type=submit] {
+        margin-top: 6px;
+    }
+}
