@@ -1,18 +1,18 @@
 package np.edu.persidential.connectionfactory;
 
+import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-@Component
+@Configuration
 public class ConnectionFactory {
 
   private final DriverManagerDataSource dataSource;
 
-  public ConnectionFactory(DriverManagerDataSource dataSource) {
-    this.dataSource = dataSource;
+  public ConnectionFactory(DriverManagerDataSource driverManagerDataSource) {
+    this.dataSource = driverManagerDataSource;
   }
 
   /**

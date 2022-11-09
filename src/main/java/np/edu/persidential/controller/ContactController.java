@@ -29,7 +29,7 @@ public class ContactController {
    * @return The index.html file
    */
   @GetMapping({"/contacts", "/"})
-  public String findAll(Model model) throws SQLException, ClassNotFoundException {
+  public String findAll(Model model) throws SQLException {
     model.addAttribute("contacts", contactDao.findAll());
     return "index";
   }
@@ -45,7 +45,7 @@ public class ContactController {
   public String displayContactForm(Model model) {
     model.addAttribute("command", new Contact());
     model.addAttribute("action", "Save");
-    return "contact-register";
+    return "/contact/contact-register";
   }
 
   /**
@@ -57,7 +57,7 @@ public class ContactController {
    */
   @PostMapping("/save")
   public String save(@ModelAttribute("contact") Contact contact)
-      throws SQLException, ClassNotFoundException {
+      throws SQLException {
     contactDao.save(contact);
     return "redirect:/contacts";
   }
@@ -67,13 +67,12 @@ public class ContactController {
    * updated values. It then calls the update function in the contactDao class, and redirects to the
    * contacts page
    *
-   * @param id The id of the contact to be updated.
    * @param contact The name of the model attribute.
    * @return A redirect to the contacts page.
    */
   @PostMapping("/update")
   public String update(@ModelAttribute("contact") Contact contact)
-      throws SQLException, ClassNotFoundException {
+      throws SQLException {
     contactDao.update(contact);
     return "redirect:/contacts";
   }
@@ -86,7 +85,7 @@ public class ContactController {
    * @return A redirect to the contacts page.
    */
   @GetMapping("/delete/{id}")
-  public String remove(@PathVariable int id) throws SQLException, ClassNotFoundException {
+  public String remove(@PathVariable int id) throws SQLException {
     contactDao.delete(id);
     return "redirect:/contacts";
   }
@@ -102,7 +101,7 @@ public class ContactController {
    */
   @GetMapping("/edit/{id}")
   public String editSave(@PathVariable int id, Model model)
-      throws SQLException, ClassNotFoundException {
+      throws SQLException {
     Contact contact = contactDao.findOne(id);
     model.addAttribute("command", contact);
     model.addAttribute("action", "Update");
