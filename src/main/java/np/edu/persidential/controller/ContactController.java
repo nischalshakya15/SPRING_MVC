@@ -2,16 +2,25 @@ package np.edu.persidential.controller;
 
 import np.edu.persidential.dao.ContactDao;
 import np.edu.persidential.model.Contact;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 
-@Controller
+@RestController
+@RequestMapping(value = "/contacts")
 public class ContactController {
 
   private final ContactDao contactDao;
@@ -21,90 +30,65 @@ public class ContactController {
   }
 
   /**
-   * The `findAll()` function is a `@GetMapping` function that returns a `String` and takes a
-   * `Model` as a parameter
+   * This function returns a list of all contacts in the database
    *
-   * @param model This is the model object that is used to pass data from the controller to the
-   *     view.
-   * @return The index.html file
+   * @return A list of contacts
    */
-  @GetMapping({"/contacts", "/"})
-  public String findAll(Model model) throws SQLException {
-    model.addAttribute("contacts", contactDao.findAll());
-    return "index";
+  @GetMapping
+  public ResponseEntity<List<Contact>> findAll() throws SQLException {
+    return ResponseEntity.ok(contactDao.findAll());
   }
 
   /**
-   * The function `displayContactForm` is a GET request handler that returns the
-   * `contact-register-update` view
+   * The function takes a JSON object, converts it to a Contact object, saves it to the database,
+   * and returns the newly created Contact object
    *
-   * @param model The model is a map that is used to pass data from the controller to the view.
-   * @return The return value is a String that represents the name of the view.
+   * @param contact This is the object that will be created.
+   * @return The response entity is being returned.
    */
-  @GetMapping("/contact-form")
-  public String displayContactForm(Model model) {
-    model.addAttribute("command", new Contact());
-    model.addAttribute("action", "Save");
-    return "/contact/contact-register";
-  }
-
-  /**
-   * The function takes a contact object as a parameter, saves it to the database, and then
-   * redirects the user to the contacts page
-   *
-   * @param contact The name of the model attribute.
-   * @return A redirect to the contacts page.
-   */
-  @PostMapping("/save")
-  public String save(@ModelAttribute("contact") Contact contact)
-      throws SQLException {
+  @PostMapping
+  public ResponseEntity<Contact> create(@RequestBody Contact contact)
+      throws URISyntaxException, SQLException {
     contactDao.save(contact);
-    return "redirect:/contacts";
+    return ResponseEntity.created(new URI("/api/v1/contacts"))
+        .body(contactDao.findContactSortByIdDesc());
   }
 
   /**
-   * The function takes in the id of the contact to be updated, and the contact object with the
-   * updated values. It then calls the update function in the contactDao class, and redirects to the
-   * contacts page
+   * This function will return a contact with the given id
    *
-   * @param contact The name of the model attribute.
-   * @return A redirect to the contacts page.
+   * @param id the id of the contact you want to find
+   * @return A ResponseEntity object with a status code of 200 and a body containing the Contact
+   *     object with the specified id.
    */
-  @PostMapping("/update")
-  public String update(@ModelAttribute("contact") Contact contact)
+  @GetMapping("/{id}")
+  public ResponseEntity<Contact> findOne(@PathVariable int id) throws SQLException {
+    return ResponseEntity.ok(contactDao.findOne(id));
+  }
+
+  /**
+   * It updates the contact with the given id.
+   *
+   * @param id The id of the contact to update
+   * @param contact The object that will be updated.
+   * @return A ResponseEntity object is being returned.
+   */
+  @PutMapping("/{id}")
+  public ResponseEntity<Contact> update(@PathVariable int id, @RequestBody Contact contact)
       throws SQLException {
     contactDao.update(contact);
-    return "redirect:/contacts";
+    return ResponseEntity.ok(contactDao.findOne(id));
   }
 
   /**
-   * The function takes an id as a parameter, deletes the contact with that id from the database,
-   * and then redirects the user to the contacts page
+   * It deletes a contact from the database and returns a message to the user
    *
    * @param id The id of the contact to be deleted.
-   * @return A redirect to the contacts page.
+   * @return A ResponseEntity object is being returned.
    */
-  @GetMapping("/delete/{id}")
-  public String remove(@PathVariable int id) throws SQLException {
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Map<String, String>> remove(@PathVariable int id) throws SQLException {
     contactDao.delete(id);
-    return "redirect:/contacts";
-  }
-
-  /**
-   * The function takes the id of the contact to be edited as a path variable, finds the contact in
-   * the database, and then passes the contact to the view
-   *
-   * @param id The id of the contact to be edited.
-   * @param model This is the model object that is used to pass data from the controller to the
-   *     view.
-   * @return The editSave method is returning the contact-register-update page.
-   */
-  @GetMapping("/edit/{id}")
-  public String editSave(@PathVariable int id, Model model)
-      throws SQLException {
-    Contact contact = contactDao.findOne(id);
-    model.addAttribute("command", contact);
-    model.addAttribute("action", "Update");
-    return "/contact/contact-update";
+    return new ResponseEntity<>(Map.of("message", "Contact deleted successfully."), HttpStatus.OK);
   }
 }

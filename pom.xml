@@ -60,6 +60,10 @@
             <artifactId>tomcat-embed-jasper</artifactId>
             <version>9.0.44</version>
         </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-xml</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

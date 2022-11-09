@@ -16,4 +16,6 @@ public interface ContactDao {
   List<Contact> findAll() throws SQLException;
 
   Contact findOne(int id) throws SQLException;
+
+  Contact findContactSortByIdDesc() throws  SQLException;
 }

@@ -128,4 +128,26 @@ public class ContactDaoImpl implements ContactDao {
     }
     return contact;
   }
+
+  /**
+   * It returns the last contact in the database
+   *
+   * @return The last contact in the database.
+   */
+  @Override
+  public Contact findContactSortByIdDesc() throws SQLException {
+    final String QUERY = "SELECT *FROM contacts ORDER BY ID DESC LIMIT 1";
+    connection = connectionFactory.getConnection();
+    preparedStatement = connection.prepareStatement(QUERY);
+    resultSet = preparedStatement.executeQuery();
+    Contact contact = new Contact();
+    while (resultSet.next()) {
+      contact.setId(resultSet.getInt("id"));
+      contact.setFirstName(resultSet.getString("first_name"));
+      contact.setLastName(resultSet.getString("last_name"));
+      contact.setAddress(resultSet.getString("address"));
+      contact.setPhoneNumber(resultSet.getLong("phone_number"));
+    }
+    return contact;
+  }
 }

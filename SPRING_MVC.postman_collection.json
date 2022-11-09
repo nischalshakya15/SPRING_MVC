@@ -1,0 +1,238 @@
+{
+	"info": {
+		"_postman_id": "7dd9d673-57e9-4011-8984-65106ff9c48d",
+		"name": "SPRING_MVC",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1328954"
+	},
+	"item": [
+		{
+			"name": "findAll",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let template = `",
+							"    <table>",
+							"        <tr>",
+							"            <th>ID</th>",
+							"            <th>FirstName</th>",
+							"            <th>LastName</th>",
+							"            <th>Address</th>",
+							"            <th>PhoneNumber</th>",
+							"        </tr>",
+							"",
+							"        {{#each response}}",
+							"            <tr>",
+							"                <td>{{id}}</td>",
+							"                <td>{{firstName}}</td>",
+							"                <td>{{lastName}}</td>",
+							"                <td>{{address}}</td>",
+							"                <td>{{phoneNumber}}</td>",
+							"            </tr>",
+							"        {{/each}}",
+							"    </table>",
+							"`;",
+							"",
+							"// Set visualizer",
+							"pm.visualizer.set(template, {",
+							"    // Pass the response body parsed as JSON as `data`",
+							"    response: pm.response.json()",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/xml",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}",
+					"host": [
+						"{{API_URL}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \n  \"firstName\": \"Brianna\",\n  \"lastName\": \"West\",\n  \"address\": \"Putalisadak, Kathmandu\",\n  \"phoneNumber\": 9849124578\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}",
+					"host": [
+						"{{API_URL}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findOne",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let template = `",
+							"    <table>",
+							"        <tr>",
+							"            <th>ID</th>",
+							"            <th>FirstName</th>",
+							"            <th>LastName</th>",
+							"            <th>Address</th>",
+							"            <th>PhoneNumber</th>",
+							"        </tr>",
+							"        <tr>",
+							"          <td>{{response.id}}</td>",
+							"          <td>{{response.firstName}}</td>",
+							"          <td>{{response.lastName}}</td>",
+							"          <td>{{response.address}}</td>",
+							"          <td>{{response.phoneNumber}}</td>",
+							"        </tr>",
+							"    </table>",
+							"`;",
+							"",
+							"// Set visualizer",
+							"pm.visualizer.set(template, {",
+							"    // Pass the response body parsed as JSON as `data`",
+							"    response: pm.response.json()",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/xml",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{API_URL}}/22",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"22"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let template = `",
+							"    <table>",
+							"        <tr>",
+							"            <th>ID</th>",
+							"            <th>FirstName</th>",
+							"            <th>LastName</th>",
+							"            <th>Address</th>",
+							"            <th>PhoneNumber</th>",
+							"        </tr>",
+							"        <tr>",
+							"          <td>{{response.id}}</td>",
+							"          <td>{{response.firstName}}</td>",
+							"          <td>{{response.lastName}}</td>",
+							"          <td>{{response.address}}</td>",
+							"          <td>{{response.phoneNumber}}</td>",
+							"        </tr>",
+							"    </table>",
+							"`;",
+							"",
+							"// Set visualizer",
+							"pm.visualizer.set(template, {",
+							"    // Pass the response body parsed as JSON as `data`",
+							"    response: pm.response.json()",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id\": 12,\n  \"firstName\": \"Brianna\",\n  \"lastName\": \"West\",\n  \"address\": \"Putalisadak, Kathmandu\",\n  \"phoneNumber\": 9849124578\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}/12",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"12"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "remove",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{API_URL}}/23",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"23"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

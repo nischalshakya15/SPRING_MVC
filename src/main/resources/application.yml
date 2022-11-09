@@ -6,4 +6,4 @@ spring:
 
 server:
   servlet:
-    context-path: /spring-boot-jsp
+    context-path: /api/v1
