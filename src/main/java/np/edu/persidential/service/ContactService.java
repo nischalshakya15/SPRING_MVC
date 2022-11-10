@@ -1,19 +1,19 @@
 package np.edu.persidential.service;
 
+import np.edu.persidential.dto.ContactDto;
 import np.edu.persidential.exception.NotFoundException;
-import np.edu.persidential.model.Contact;
 
 import java.util.List;
 
 public interface ContactService {
 
-  Contact save(Contact contact);
+  ContactDto save(ContactDto contactDto);
 
-  Contact update(Contact contact);
+  ContactDto update(ContactDto contactDto) throws NotFoundException;
 
-  Contact findById(Integer id) throws NotFoundException;
+  ContactDto findById(Integer id) throws NotFoundException;
 
   void remove(Integer id) throws NotFoundException;
 
-  List<Contact> findAll(String orderBy);
+  List<ContactDto> findAll(String orderBy);
 }

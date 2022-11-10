@@ -1,7 +1,9 @@
 package np.edu.persidential.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import np.edu.persidential.dto.ContactDto;
 import np.edu.persidential.exception.NotFoundException;
+import np.edu.persidential.mapper.ContactMapper;
 import np.edu.persidential.model.Contact;
 import np.edu.persidential.repository.ContactRepository;
 import np.edu.persidential.service.ContactService;
@@ -17,26 +19,31 @@ public class ContactServiceImpl implements ContactService {
 
   private final ContactRepository contactRepository;
 
+  private final ContactMapper contactMapper;
+
   /**
    * Save the contact to the database.
    *
-   * @param contact The contact object that is passed in from the controller.
+   * @param contactDto The contact object that is passed in from the controller.
    * @return The contact object is being returned.
    */
   @Override
-  public Contact save(Contact contact) {
-    return contactRepository.save(contact);
+  public ContactDto save(ContactDto contactDto) {
+    Contact contact = contactRepository.save(contactMapper.toEntity(contactDto));
+    return contactMapper.toDto(contact);
   }
 
   /**
    * Update the contact in the database with the given contact.
    *
-   * @param contact The contact object that we want to update.
+   * @param contactDto The contact object that we want to update.
    * @return The updated contact.
    */
   @Override
-  public Contact update(Contact contact) {
-    return contactRepository.save(contact);
+  public ContactDto update(ContactDto contactDto) throws NotFoundException {
+    findById(contactDto.getId());
+    Contact contact = contactRepository.save(contactMapper.toEntity(contactDto));
+    return contactMapper.toDto(contact);
   }
 
   /**
@@ -46,10 +53,8 @@ public class ContactServiceImpl implements ContactService {
    * @return A contact object.
    */
   @Override
-  public Contact findById(Integer id) throws NotFoundException {
-    return contactRepository
-        .findById(id)
-        .orElseThrow(() -> new NotFoundException("Contact not found."));
+  public ContactDto findById(Integer id) throws NotFoundException {
+    return contactMapper.toDto(getContact(id));
   }
 
   /**
@@ -59,8 +64,7 @@ public class ContactServiceImpl implements ContactService {
    */
   @Override
   public void remove(Integer id) throws NotFoundException {
-    Contact contact = findById(id);
-    contactRepository.delete(contact);
+    contactRepository.delete(getContact(id));
   }
 
   /**
@@ -71,10 +75,16 @@ public class ContactServiceImpl implements ContactService {
    * @return A list of contacts
    */
   @Override
-  public List<Contact> findAll(String orderBy) {
+  public List<ContactDto> findAll(String orderBy) {
     if (orderBy.equalsIgnoreCase("desc")) {
-      return contactRepository.findAllByOrderByIdDesc();
+      return contactMapper.toDto(contactRepository.findAllByOrderByIdDesc());
     }
-    return contactRepository.findAll();
+    return contactMapper.toDto(contactRepository.findAll());
+  }
+
+  private Contact getContact(Integer id) throws NotFoundException {
+    return contactRepository
+        .findById(id)
+        .orElseThrow(() -> new NotFoundException("Contact not found"));
   }
 }

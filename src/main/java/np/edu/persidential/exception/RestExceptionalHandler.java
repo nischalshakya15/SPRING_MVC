@@ -1,10 +1,17 @@
 package np.edu.persidential.exception;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @ControllerAdvice
 public class RestExceptionalHandler extends ResponseEntityExceptionHandler {
@@ -35,6 +42,34 @@ public class RestExceptionalHandler extends ResponseEntityExceptionHandler {
     APIException apiException =
         new APIException(HttpStatus.NOT_FOUND, exception.getMessage(), exception);
     return buildResponseEntity(apiException);
+  }
+
+  /**
+   * We are overriding the default Spring Boot exception handler for MethodArgumentNotValidException and returning a map of
+   * field names and error messages
+   *
+   * @param ex The exception that was thrown
+   * @param headers HttpHeaders
+   * @param status The status code to return.
+   * @param request The current request.
+   * @return A map of field names and error messages.
+   */
+  @Override
+  protected ResponseEntity<Object> handleMethodArgumentNotValid(
+      MethodArgumentNotValidException ex,
+      HttpHeaders headers,
+      HttpStatus status,
+      WebRequest request) {
+    Map<String, String> validationErrorMap = new HashMap<>();
+    ex.getBindingResult()
+        .getAllErrors()
+        .forEach(
+            error -> {
+              String fieldName = ((FieldError) error).getField();
+              String message = error.getDefaultMessage();
+              validationErrorMap.put(fieldName, message);
+            });
+    return new ResponseEntity<>(validationErrorMap, HttpStatus.BAD_REQUEST);
   }
 
   /**
