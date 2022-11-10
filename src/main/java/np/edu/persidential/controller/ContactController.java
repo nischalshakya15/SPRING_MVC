@@ -55,13 +55,13 @@ public class ContactController {
     return ResponseEntity.created(new URI("/api/v1/contacts")).body(contactService.save(contact));
   }
 
+
   /**
-   * We're creating a new contact using the data from the request body, and returning the created
-   * contact in the response body
+   * We're creating a new contact using the data from the request body, and returning the created contact in the response
+   * body
    *
    * @param contactDto The object that will be used to create the contact.
-   * @return A ResponseEntity with a status of 201 (created) and a body of the newly created
-   *     contact.
+   * @return A ResponseEntity with a status of 201 (created) and a body of the newly created contact.
    */
   @PostMapping("/dto")
   public ResponseEntity<Contact> create(@Valid @RequestBody ContactDto contactDto)
