@@ -3,6 +3,7 @@ package np.edu.persidential.mapper;
 import np.edu.persidential.dto.ContactDto;
 import np.edu.persidential.model.Contact;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.factory.Mappers;
 
@@ -13,6 +14,9 @@ public interface ContactMapper {
 
   ContactMapper INSTANCE = Mappers.getMapper(ContactMapper.class);
 
+  @Mapping(
+      target = "name",
+      expression = "java(contact.getFirstName().concat(\" \").concat(contact.getLastName()))")
   ContactDto toDto(Contact contact);
 
   Contact toEntity(ContactDto contactDto);
