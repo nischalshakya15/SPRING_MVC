@@ -1,7 +1,7 @@
 package np.edu.persidential.controller;
 
-import np.edu.persidential.dao.ContactDao;
 import np.edu.persidential.model.Contact;
+import np.edu.persidential.service.ContactService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -23,10 +22,10 @@ import java.util.Map;
 @RequestMapping(value = "/contacts")
 public class ContactController {
 
-  private final ContactDao contactDao;
+  private final ContactService contactService;
 
-  public ContactController(ContactDao contactDao) {
-    this.contactDao = contactDao;
+  public ContactController(ContactService contactService) {
+    this.contactService = contactService;
   }
 
   /**
@@ -35,8 +34,8 @@ public class ContactController {
    * @return A list of contacts
    */
   @GetMapping
-  public ResponseEntity<List<Contact>> findAll() throws SQLException {
-    return ResponseEntity.ok(contactDao.findAll());
+  public ResponseEntity<List<Contact>> findAll() {
+    return ResponseEntity.ok(contactService.findAll());
   }
 
   /**
@@ -47,11 +46,10 @@ public class ContactController {
    * @return The response entity is being returned.
    */
   @PostMapping
-  public ResponseEntity<Contact> create(@RequestBody Contact contact)
-      throws URISyntaxException, SQLException {
-    contactDao.save(contact);
+  public ResponseEntity<Contact> create(@RequestBody Contact contact) throws URISyntaxException {
+    contactService.save(contact);
     return ResponseEntity.created(new URI("/api/v1/contacts"))
-        .body(contactDao.findContactSortByIdDesc());
+        .body(contactService.findContactSortByIdDesc());
   }
 
   /**
@@ -62,8 +60,8 @@ public class ContactController {
    *     object with the specified id.
    */
   @GetMapping("/{id}")
-  public ResponseEntity<Contact> findOne(@PathVariable int id) throws SQLException {
-    return ResponseEntity.ok(contactDao.findOne(id));
+  public ResponseEntity<Contact> findOne(@PathVariable int id) {
+    return ResponseEntity.ok(contactService.findById(id));
   }
 
   /**
@@ -74,10 +72,9 @@ public class ContactController {
    * @return A ResponseEntity object is being returned.
    */
   @PutMapping("/{id}")
-  public ResponseEntity<Contact> update(@PathVariable int id, @RequestBody Contact contact)
-      throws SQLException {
-    contactDao.update(contact);
-    return ResponseEntity.ok(contactDao.findOne(id));
+  public ResponseEntity<Contact> update(@PathVariable Integer id, @RequestBody Contact contact) {
+    contactService.update(contact);
+    return ResponseEntity.ok(contactService.findById(id));
   }
 
   /**
@@ -87,8 +84,8 @@ public class ContactController {
    * @return A ResponseEntity object is being returned.
    */
   @DeleteMapping("/{id}")
-  public ResponseEntity<Map<String, String>> remove(@PathVariable int id) throws SQLException {
-    contactDao.delete(id);
+  public ResponseEntity<Map<String, String>> remove(@PathVariable Integer id) {
+    contactService.remove(id);
     return new ResponseEntity<>(Map.of("message", "Contact deleted successfully."), HttpStatus.OK);
   }
 }
