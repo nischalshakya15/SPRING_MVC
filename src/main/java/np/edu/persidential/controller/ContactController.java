@@ -1,7 +1,9 @@
 package np.edu.persidential.controller;
 
-import np.edu.persidential.dao.ContactDao;
+import np.edu.persidential.dto.ContactDto;
+import np.edu.persidential.exception.NotFoundException;
 import np.edu.persidential.model.Contact;
+import np.edu.persidential.service.ContactService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,11 +13,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -23,10 +26,10 @@ import java.util.Map;
 @RequestMapping(value = "/contacts")
 public class ContactController {
 
-  private final ContactDao contactDao;
+  private final ContactService contactService;
 
-  public ContactController(ContactDao contactDao) {
-    this.contactDao = contactDao;
+  public ContactController(ContactService contactService) {
+    this.contactService = contactService;
   }
 
   /**
@@ -35,8 +38,9 @@ public class ContactController {
    * @return A list of contacts
    */
   @GetMapping
-  public ResponseEntity<List<Contact>> findAll() throws SQLException {
-    return ResponseEntity.ok(contactDao.findAll());
+  public ResponseEntity<List<Contact>> findAll(
+      @RequestParam(value = "orderBy", defaultValue = "asc") String orderBy) {
+    return ResponseEntity.ok(contactService.findAll(orderBy));
   }
 
   /**
@@ -47,11 +51,27 @@ public class ContactController {
    * @return The response entity is being returned.
    */
   @PostMapping
-  public ResponseEntity<Contact> create(@RequestBody Contact contact)
-      throws URISyntaxException, SQLException {
-    contactDao.save(contact);
-    return ResponseEntity.created(new URI("/api/v1/contacts"))
-        .body(contactDao.findContactSortByIdDesc());
+  public ResponseEntity<Contact> create(@RequestBody Contact contact) throws URISyntaxException {
+    return ResponseEntity.created(new URI("/api/v1/contacts")).body(contactService.save(contact));
+  }
+
+  /**
+   * We're creating a new contact using the data from the request body, and returning the created
+   * contact in the response body
+   *
+   * @param contactDto The object that will be used to create the contact.
+   * @return A ResponseEntity with a status of 201 (created) and a body of the newly created
+   *     contact.
+   */
+  @PostMapping("/dto")
+  public ResponseEntity<Contact> create(@Valid @RequestBody ContactDto contactDto)
+      throws URISyntaxException {
+    Contact contact = new Contact();
+    contact.setFirstName(contactDto.getFirstName());
+    contact.setLastName(contactDto.getLastName());
+    contact.setAddress(contactDto.getAddress());
+    contact.setPhoneNumber(contactDto.getPhoneNumber());
+    return ResponseEntity.created(new URI("/api/v1/contacts")).body(contactService.save(contact));
   }
 
   /**
@@ -62,8 +82,8 @@ public class ContactController {
    *     object with the specified id.
    */
   @GetMapping("/{id}")
-  public ResponseEntity<Contact> findOne(@PathVariable int id) throws SQLException {
-    return ResponseEntity.ok(contactDao.findOne(id));
+  public ResponseEntity<Contact> findOne(@PathVariable Integer id) throws NotFoundException {
+    return ResponseEntity.ok(contactService.findById(id));
   }
 
   /**
@@ -74,10 +94,8 @@ public class ContactController {
    * @return A ResponseEntity object is being returned.
    */
   @PutMapping("/{id}")
-  public ResponseEntity<Contact> update(@PathVariable int id, @RequestBody Contact contact)
-      throws SQLException {
-    contactDao.update(contact);
-    return ResponseEntity.ok(contactDao.findOne(id));
+  public ResponseEntity<Contact> update(@PathVariable Integer id, @RequestBody Contact contact) {
+    return ResponseEntity.ok(contactService.update(contact));
   }
 
   /**
@@ -87,8 +105,9 @@ public class ContactController {
    * @return A ResponseEntity object is being returned.
    */
   @DeleteMapping("/{id}")
-  public ResponseEntity<Map<String, String>> remove(@PathVariable int id) throws SQLException {
-    contactDao.delete(id);
+  public ResponseEntity<Map<String, String>> remove(@PathVariable Integer id)
+      throws NotFoundException {
+    contactService.remove(id);
     return new ResponseEntity<>(Map.of("message", "Contact deleted successfully."), HttpStatus.OK);
   }
 }
