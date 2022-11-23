@@ -12,6 +12,10 @@ spring:
     hibernate:
       ddl-auto: create
     show-sql: true
+  security:
+    user:
+      name: admin
+      password: admin
 springdoc:
   swagger-ui:
     operations-sorter: method
