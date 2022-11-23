@@ -1,0 +1,122 @@
+package np.edu.persidential.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.SecurityFilterChain;
+
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true, jsr250Enabled = true, securedEnabled = true)
+public class SecurityConfig {
+
+  /**
+   * The BCryptPasswordEncoder is a class that implements the PasswordEncoder interface.
+   *
+   * The PasswordEncoder interface is a Spring Security interface that defines a single method called encode.
+   *
+   * The encode method takes a String and returns a String.
+   *
+   * The BCryptPasswordEncoder class implements the encode method by hashing the password using the BCrypt hashing
+   * function.
+   *
+   * The BCryptPasswordEncoder class also implements a method called matches that takes a raw password and an encoded
+   * password and returns true if the raw password matches the encoded password.
+   *
+   * The BCryptPasswordEncoder class is a Spring Security class that is used to hash passwords.
+   *
+   * The BCryptPasswordEncoder class implements the PasswordEncoder interface.
+   *
+   * The PasswordEncoder interface defines a single method called encode.
+   *
+   * The encode method takes a String and returns a String.
+   *
+   * The BCryptPasswordEncoder class implements the encode method by
+   *
+   * @return A new instance of BCryptPasswordEncoder.
+   */
+  @Bean
+  public BCryptPasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
+
+  /**
+   * It creates two users, admin and user, with the password admin and user respectively, and the role ADMIN and USER
+   * respectively
+   *
+   * @param bCryptPasswordEncoder This is the password encoder that we created earlier.
+   * @return An instance of InMemoryUserDetailsManager
+   */
+  @Bean
+  public UserDetailsService userDetailsService(BCryptPasswordEncoder bCryptPasswordEncoder) {
+    InMemoryUserDetailsManager inMemoryUserDetailsManager = new InMemoryUserDetailsManager();
+    inMemoryUserDetailsManager.createUser(
+        User.withUsername("admin")
+            .password(bCryptPasswordEncoder.encode("admin"))
+            .roles("ADMIN")
+            .build());
+    inMemoryUserDetailsManager.createUser(
+        User.withUsername("user")
+            .password(bCryptPasswordEncoder.encode("user"))
+            .roles("USER")
+            .build());
+    return inMemoryUserDetailsManager;
+  }
+
+  /**
+   * This function returns an AuthenticationManager that is configured to use the UserDetailsService and PasswordEncoder
+   * that we have configured in our application.
+   *
+   * @param http The HttpSecurity object that is used to configure the security of the application.
+   * @param bCryptPasswordEncoder This is the password encoder that we created earlier.
+   * @param userDetailsService This is the service that will be used to load the user's details.
+   * @return An AuthenticationManager
+   */
+  @Bean
+  public AuthenticationManager authManager(
+      HttpSecurity http,
+      BCryptPasswordEncoder bCryptPasswordEncoder,
+      UserDetailsService userDetailsService)
+      throws Exception {
+    return http.getSharedObject(AuthenticationManagerBuilder.class)
+        .userDetailsService(userDetailsService)
+        .passwordEncoder(bCryptPasswordEncoder)
+        .and()
+        .build();
+  }
+
+  /**
+   * If the request is a GET request, permit it. If the request is a POST or DELETE request, authenticate it.
+   *
+   * @param http This is the HttpSecurity object that is used to configure the security filter chain.
+   * @return A SecurityFilterChain
+   */
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http = http.cors().and().csrf().disable();
+
+    http = http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and();
+
+    // Permit all requests
+    http = http.authorizeRequests().antMatchers(HttpMethod.GET, "/contacts/**").permitAll().and();
+
+    // Authenticate request
+    http =
+        http.authorizeRequests()
+            .antMatchers(HttpMethod.POST, "/contacts/**")
+            .authenticated()
+            .antMatchers(HttpMethod.DELETE, "/contacts/**")
+            .authenticated()
+            .and();
+
+    return http.httpBasic().and().build();
+  }
+}
