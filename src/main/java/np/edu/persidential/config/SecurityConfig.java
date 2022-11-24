@@ -1,7 +1,6 @@
 package np.edu.persidential.config;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -109,19 +108,8 @@ public class SecurityConfig {
 
     http = http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and();
 
-    // Permit all requests
-    http = http.authorizeRequests().antMatchers(HttpMethod.GET, "/contacts/**").permitAll().and();
-
     // Authenticate request
-    http =
-        http.authorizeRequests()
-            .antMatchers(HttpMethod.POST, "/contacts/**")
-            .hasAnyRole("USER", "ADMIN")
-            .antMatchers(HttpMethod.DELETE, "/contacts/**")
-            .hasAnyRole("ADMIN")
-            .anyRequest()
-            .authenticated()
-            .and();
+    http = http.authorizeRequests().antMatchers("/api/v1/**").authenticated().and();
 
     return http.httpBasic().and().build();
   }
