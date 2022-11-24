@@ -21,25 +21,27 @@ public class SecurityConfig {
   /**
    * The BCryptPasswordEncoder is a class that implements the PasswordEncoder interface.
    *
-   * The PasswordEncoder interface is a Spring Security interface that defines a single method called encode.
+   * <p>The PasswordEncoder interface is a Spring Security interface that defines a single method
+   * called encode.
    *
-   * The encode method takes a String and returns a String.
+   * <p>The encode method takes a String and returns a String.
    *
-   * The BCryptPasswordEncoder class implements the encode method by hashing the password using the BCrypt hashing
-   * function.
+   * <p>The BCryptPasswordEncoder class implements the encode method by hashing the password using
+   * the BCrypt hashing function.
    *
-   * The BCryptPasswordEncoder class also implements a method called matches that takes a raw password and an encoded
-   * password and returns true if the raw password matches the encoded password.
+   * <p>The BCryptPasswordEncoder class also implements a method called matches that takes a raw
+   * password and an encoded password and returns true if the raw password matches the encoded
+   * password.
    *
-   * The BCryptPasswordEncoder class is a Spring Security class that is used to hash passwords.
+   * <p>The BCryptPasswordEncoder class is a Spring Security class that is used to hash passwords.
    *
-   * The BCryptPasswordEncoder class implements the PasswordEncoder interface.
+   * <p>The BCryptPasswordEncoder class implements the PasswordEncoder interface.
    *
-   * The PasswordEncoder interface defines a single method called encode.
+   * <p>The PasswordEncoder interface defines a single method called encode.
    *
-   * The encode method takes a String and returns a String.
+   * <p>The encode method takes a String and returns a String.
    *
-   * The BCryptPasswordEncoder class implements the encode method by
+   * <p>The BCryptPasswordEncoder class implements the encode method by
    *
    * @return A new instance of BCryptPasswordEncoder.
    */
@@ -49,8 +51,8 @@ public class SecurityConfig {
   }
 
   /**
-   * It creates two users, admin and user, with the password admin and user respectively, and the role ADMIN and USER
-   * respectively
+   * It creates two users, admin and user, with the password admin and user respectively, and the
+   * role ADMIN and USER respectively
    *
    * @param bCryptPasswordEncoder This is the password encoder that we created earlier.
    * @return An instance of InMemoryUserDetailsManager
@@ -72,8 +74,8 @@ public class SecurityConfig {
   }
 
   /**
-   * This function returns an AuthenticationManager that is configured to use the UserDetailsService and PasswordEncoder
-   * that we have configured in our application.
+   * This function returns an AuthenticationManager that is configured to use the UserDetailsService
+   * and PasswordEncoder that we have configured in our application.
    *
    * @param http The HttpSecurity object that is used to configure the security of the application.
    * @param bCryptPasswordEncoder This is the password encoder that we created earlier.
@@ -94,9 +96,11 @@ public class SecurityConfig {
   }
 
   /**
-   * If the request is a GET request, permit it. If the request is a POST or DELETE request, authenticate it.
+   * If the request is a GET request, permit it. If the request is a POST or DELETE request,
+   * authenticate it.
    *
-   * @param http This is the HttpSecurity object that is used to configure the security filter chain.
+   * @param http This is the HttpSecurity object that is used to configure the security filter
+   *     chain.
    * @return A SecurityFilterChain
    */
   @Bean
@@ -112,8 +116,10 @@ public class SecurityConfig {
     http =
         http.authorizeRequests()
             .antMatchers(HttpMethod.POST, "/contacts/**")
-            .authenticated()
+            .hasAnyRole("USER", "ADMIN")
             .antMatchers(HttpMethod.DELETE, "/contacts/**")
+            .hasAnyRole("ADMIN")
+            .anyRequest()
             .authenticated()
             .and();
 

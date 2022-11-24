@@ -45,8 +45,8 @@ public class RestExceptionalHandler extends ResponseEntityExceptionHandler {
   }
 
   /**
-   * We are overriding the default Spring Boot exception handler for MethodArgumentNotValidException and returning a map of
-   * field names and error messages
+   * We are overriding the default Spring Boot exception handler for MethodArgumentNotValidException
+   * and returning a map of field names and error messages
    *
    * @param ex The exception that was thrown
    * @param headers HttpHeaders
