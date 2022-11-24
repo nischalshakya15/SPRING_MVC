@@ -6,8 +6,16 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
     show-sql: true
 springdoc:
   swagger-ui:
     operations-sorter: method
+
+jwt:
+  refreshToken:
+    expiresIn: 172800000
+    secretKey: bZnoIcVsWCM7HvjTSMaNJ26SPsXBMU5pHzu8NxWIU1XkxCw1vn
+  accessToken:
+    expiresIn: 86400000
+    secretKey: ulll60BDXyO3OoGHuaRikY4ESOgXnrEotljOc4uJEI1ZZWlsKr
