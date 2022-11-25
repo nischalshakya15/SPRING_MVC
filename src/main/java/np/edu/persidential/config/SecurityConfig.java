@@ -22,11 +22,22 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true, jsr250Enabled = true, securedEnabled = true)
 public class SecurityConfig {
 
+  /**
+   * This function creates a new JwtRequestFilter object, which is a filter that intercepts all requests and checks for a
+   * valid JWT token in the Authorization header
+   *
+   * @return A JwtRequestFilter object.
+   */
   @Bean
   public JwtRequestFilter jwtAuthenticationFilter() {
     return new JwtRequestFilter(getJwtTokenProvider(), userDetailsService(passwordEncoder()));
   }
 
+  /**
+   * It creates a new instance of the JwtTokenProvider class.
+   *
+   * @return A new instance of the JwtTokenProvider class.
+   */
   @Bean
   public JwtTokenProvider getJwtTokenProvider() {
     return new JwtTokenProvider();

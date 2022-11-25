@@ -82,6 +82,12 @@ public class ContactServiceImpl implements ContactService {
     return contactMapper.toDto(contactRepository.findAll());
   }
 
+  /**
+   * If the contact exists, return it, otherwise throw a NotFoundException.
+   *
+   * @param id The id of the contact to be retrieved.
+   * @return A contact object
+   */
   private Contact getContact(Integer id) throws NotFoundException {
     return contactRepository
         .findById(id)

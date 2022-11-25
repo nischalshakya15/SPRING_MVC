@@ -33,8 +33,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
    */
   @Override
   protected void doFilterInternal(
-      HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-      throws ServletException, IOException {
+      HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {
     try {
       String jwt = getJwtFromRequest(request);
       if (StringUtils.hasText(jwt) && jwtTokenProvider.validateAccessToken(jwt)) {
@@ -53,20 +52,15 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     } catch (Exception ex) {
       log.error(ex.getMessage());
     }
-    filterChain.doFilter(request, response);
   }
 
   /**
-   * If the request URI is equal to /api/v1/login, then do not filter the request
+   * If the request has an Authorization header with a value that starts with "Bearer ", then return the value of the
+   * header without the "Bearer " prefix
    *
    * @param request The HttpServletRequest object.
-   * @return A boolean value.
+   * @return The JWT token
    */
-  @Override
-  protected boolean shouldNotFilter(HttpServletRequest request) {
-    return request.getRequestURI().equalsIgnoreCase("/api/v1/login");
-  }
-
   private String getJwtFromRequest(HttpServletRequest request) {
     String bearerToken = request.getHeader("Authorization");
     if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
