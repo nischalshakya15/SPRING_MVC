@@ -23,8 +23,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
   /**
-   * This function creates a new JwtRequestFilter object, which is a filter that intercepts all requests and checks for a
-   * valid JWT token in the Authorization header
+   * This function creates a new JwtRequestFilter object, which is a filter that intercepts all
+   * requests and checks for a valid JWT token in the Authorization header
    *
    * @return A JwtRequestFilter object.
    */
